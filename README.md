@@ -134,3 +134,17 @@ Note: when add any extra app you should add it to this array and if not it will 
 
 17- make django use our custom user model by going to settings.py and add this line in the last
   AUTH_USER_MODEL = 'pythonApi.UserProfile'
+18- then create migration by execute
+  `python manage.py makemigrations`
+19- then do migrate by execute
+  `python manage.py migrate # by this db.sqlite3 file will created contain all tables`
+20- now you can create your admin acount by execute
+   `python manage.py createsuperuser # and fill data of user`
+21- to register user admin change admin.py inside pythonApi file content to
+  `from django.contrib import admin
+
+  from . import models
+
+  admin.site.register(models.UserProfile)`
+22- now we can test admin users first execute
+  `python manage.py runserver 0.0.0.0:8080`
