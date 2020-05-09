@@ -73,3 +73,64 @@ Note: profiles_project contain setting of all PROJECT_HOME
 13- then add 'rest_framework.authtoken' to same array
 14- then also add 'pythonApi' to same array
 Note: when add any extra app you should add it to this array and if not it will never working
+15- create requirement file contain all package used execute
+  pip freeze # to show all pakages use by the project
+  then execute
+  pip freeze > requirements.txt # to add all packages to this file
+16- go to models.py and adding this
+`    from django.db import models
+    from django.contrib.auth.models import AbstractBaseUser
+    from django.contrib.auth.models import PermissionsMixin
+    from django.contrib.auth.models import BaseUserManager
+
+    class UserProfileManager(BaseUserManager):
+        """Help django work with our custom user model."""
+
+        def create_user(self, email, name, password=None):
+            """Creates a new user profile object."""
+            if not email:
+                raise ValueError('Users must have an email address.')
+            email = self.normalize_email(email) # make all char lowercase
+            user = self.model(email=email, name=name) # create new user object
+
+            user.set_password(password) # will incript password
+            user.save(using=self._db)
+            return user
+
+        def create_superuser(self, email, name, password):
+            """Creates and saves a new superuser with given details."""
+
+            user = self.create_user(email, name, password)
+
+            user.is_superuser = True
+            user.is_staff = True
+
+            user.save(using=self._db)
+
+            return user
+
+
+    class UserProfile(AbstractBaseUser, PermissionsMixin): # inherited from AbstracktBaseUser, PermissionsMixin
+        """Respents a "user profile" inside our system."""
+        email = models.EmailField(max_length=255, unique=True)
+        name = models.CharField(max_length=255)
+        is_active = models.BooleanField(default=True)
+        is_staff = models.BooleanField(default=False)
+        objects = UserProfileManager()
+        USERNAME_FIELD = 'email' # is already required by the system
+        REQUIRED_FIELDS = ['name']
+
+        def get_full_name(self):
+            """Used to get a users full name."""
+            return self.name
+
+        def get_short_name(self):
+            """Used to get a users short name."""
+            return self.name
+        def __str__(self):
+            """Django uses this when it needs to convert the object to a string"""
+            return self.email`
+    to create user model
+
+17- make django use our custom user model by going to settings.py and add this line in the last
+  AUTH_USER_MODEL = 'pythonApi.UserProfile'
