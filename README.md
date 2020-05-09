@@ -148,3 +148,18 @@ Note: when add any extra app you should add it to this array and if not it will 
   admin.site.register(models.UserProfile)`
 22- now we can test admin users first execute
   `python manage.py runserver 0.0.0.0:8080`
+  then access to admin panel by http://127.0.0.1:8080/admin/
+  login using you superuser details and enter to the panel
+23- create test APIView by going to views.py in our applicatin pythonApi
+24- you can add new url inside profiles_project in urls.py file and we will create urls for each application
+to create urls file to pythonApi applicatin first add this import to include
+`from django.conf.urls import include`
+and in urlpatterns array add this item
+  `path('api/', include('pythonApi.urls'))`
+then create urls file in pythonApi
+put inside it
+  ` from django.urls import path
+    from . import views
+    urlpatterns = [
+        path('hellow-view/', views.HellowApiView.as_view())
+    ]`
