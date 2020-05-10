@@ -247,3 +247,40 @@ and below old class in views.py create viewset class and add list to list all it
         def destroy(self, request, pk=None):
             """Handles removing an object."""
             return Response({'http_method': 'DELETE'})`
+
+
+32- Create user profile serializer in serializers.py inside pythonApi folder
+  first import models by
+  `from . import models`
+  then add this class
+  `class UserProfileSerializer(serializers.ModelSerializer):
+      """A serializer for our user profile objects."""
+
+      class Meta: # to tell djangorestframework what is the model
+          model = models.UserProfile
+          fields = ('id', 'email', 'name', 'password')
+          extra_kwargs = {'password': {'write_only': True}}
+
+      def create(self, validated_data):
+          """Create and return a new user."""
+
+          user = models.UserProfile(
+              email=validated_data['email'],
+              name=validated_data['name']
+          )
+
+          user.set_password(validated_data['password'])
+          user.save()
+
+          return user`
+33- Create profiles ViewSet
+    first import model by
+    `from . import models`
+    then add this class
+    `class UserProfileViewSet(viewsets.ModelViewSet):
+    """Handles creating, ceating and updating profiles."""
+    serializer_class = serializers.UserProfileSerializer
+    queryset = models.UserProfile.objects.all()`
+
+34- Register profile ViewSet with the URL router by adding this line below old router in urls.py
+  `router.register('profile', views.UserProfileViewSet) # when using model you don't need to add basename its taked from the model`
