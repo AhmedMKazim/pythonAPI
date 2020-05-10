@@ -224,3 +224,26 @@ and below old class in views.py create viewset class and add list to list all it
   router.register('hello-viewset', views.HelloViewSet, basename='hello-viewset')`
   and inside urlpatterns array add this items
   `path('', include(router.urls))`
+31- Add create, retrieve, update, partial update and destroy functions by adding these functions inside class which created below list functoin
+        `def create(self, request):
+          """Create a new hello message."""
+          serializer = serializers.helloserializer(data=request.data)
+          if serializer.is_valid():
+              name = serializer.data.get('name')
+              message = 'Hello {0}'.format(name)
+              return Response({'messge': message})
+          else:
+              return Response(
+                  serializer.errors, status=status.HTTP_400_BAD_REQUEST
+              )
+        def retrieve(self, request, pk=None):
+            """Handles getting an object by its ID."""
+            return Response({'http_method': 'GET'})
+        def update(self, request, pk=None):
+            """Handles updating an object."""
+        def partial_update(self, request, pk= None):
+            """Handles updating part of an object."""
+            return Response({'http_method': 'PATCH'})
+        def destroy(self, request, pk=None):
+            """Handles removing an object."""
+            return Response({'http_method': 'DELETE'})`
