@@ -201,3 +201,26 @@ put inside it
         """Deletes and object."""
         return Response({'method': 'delete'})
 `
+29- now we will create ViewSet
+  import it inside views.py
+    `from rest_framework import viewsets`
+and below old class in views.py create viewset class and add list to list all items as shown below
+    `class HelloViewSet(viewsets.ViewSet):
+    def list(self, request):
+        """Return a hello message."""
+        an_viewset = [
+            'Uses HTTP methods as functin (get, post, patch, put, delete)',
+            'It is similar to a traditional Django view',
+            'Gives you the most control over your logic',
+            'Is mapped manually to URLs'
+        ]
+
+        return Response({'message': 'Hello!', 'an_viewset': an_viewset})`
+30- add url router add these line to urls.py which created in pythonApi
+  `from django.conf.urls import include
+  from rest_framework.routers import DefaultRouter
+
+  router =  DefaultRouter()
+  router.register('hello-viewset', views.HelloViewSet, basename='hello-viewset')`
+  and inside urlpatterns array add this items
+  `path('', include(router.urls))`
