@@ -376,9 +376,22 @@ then register the router
           `from rest_framework.permissions import IsAuthenticatedOrReadOnly`
           then in UserProfileFeedViewSet add
           `permission_classes = (permissions.PostOwnStatus, IsAuthenticatedOrReadOnly)`
+
 45 - Restrict viewing status updates to logged in users only
   if you want to make user only can see feeds you should use this
     `from rest_framework.permissions import IsAuthenticated`
     instead of this
     `from rest_framework.permissions import IsAuthenticatedOrReadOnly`
     and use it inside permissions_classes
+
+
+46 - now push project to GithHub
+  first create ssh key by
+    `ssh-keygen`
+  when done copy the path of id_rsa.pub and open it
+  and then go to you account in GithHub then go to settings then to SSH and GPG keys
+  and press on New SSH key and fill name and fill key with public key in the file id_rsa.pub
+  then create project in GithHub
+  then copy line below
+  `..or push an existing repository from the command line`
+  and past it in the terminal
