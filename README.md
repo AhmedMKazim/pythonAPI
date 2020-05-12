@@ -322,3 +322,63 @@ and below old class in views.py create viewset class and add list to list all it
 
     and in urls.py add the router
     `router.register('login', views.LoginVieSet, basename='login')`
+39- adding new Model
+  now we will create feed model start by adding these lines to models.py file
+  `class ProfileFeedItem(models.Model):
+      """Profile status update."""
+
+      user_profile = models.ForeignKey('UserProfile', on_delete=models.CASCADE) # this will delete all feeds related to the profiles
+      status_text = models.CharField(max_length=255)
+      created_on = models.DateTimeField(auto_now_add=True)
+
+      def __str__(self): # when pring this model as string will execute this function
+          """Return the as string."""
+
+          return status_text`
+
+40 - Create and run model migration
+    to create migratin file
+    `python manage.py makemigrations`
+    then execute
+    `python manage.py migrate`
+    to migrate
+41 - Add profile feed model to admin.py to the last of it
+    `admin.site.register(models.ProfileFeedItem)`
+42 -Create profile feed item serializer adding to the last of serializers.py these lines
+  `class ProfileFeedItemSerializer(serializers.ModelSerializer):
+      """A serializer for profile feed items."""
+      class Meta:
+          model = models.ProfileFeedItem
+          fields = ('id', 'user_profile', 'status_text', 'created_on')
+          extra_kwargs = {'user_profile': {'read_only': True}} # ForeignKey of user_profile can't edit`
+43 - Create ViewSet for our profile feed item by adding these lines to the end of view.py
+  `class UserProfileFeedViewSet(viewsets.ModelViewSet):
+      """Handles creating, reading and updating profiles feed items."""
+
+      authentication_classes = (TokenAuthentication,)
+      serializer_class = serializers.ProfileFeedItemSerializer
+      queryset = models.ProfileFeedItem.objects.all()
+      def perform_create(self, serializer):
+          """Sets the user profile to the logged in user."""
+          serializer.save(user_profile=self.request.user)`
+then register the router
+  `router.register('feed', views.UserProfileFeed)`
+
+44 - Add permissions for feed API in the end of the permissions.py add
+  `class PostOwnStatus(permissions.BasePermission):
+      """Allow users to update their own status."""
+      def has_object_permission(self, request, view, obj):
+          """Checks the user is trying to update their own status."""
+          if request.method in permissions.SAFE_METHODS:
+              return True
+          return obj.user_profile.id == request.user.id`
+          then go to veiws.py and add
+          `from rest_framework.permissions import IsAuthenticatedOrReadOnly`
+          then in UserProfileFeedViewSet add
+          `permission_classes = (permissions.PostOwnStatus, IsAuthenticatedOrReadOnly)`
+45 - Restrict viewing status updates to logged in users only
+  if you want to make user only can see feeds you should use this
+    `from rest_framework.permissions import IsAuthenticated`
+    instead of this
+    `from rest_framework.permissions import IsAuthenticatedOrReadOnly`
+    and use it inside permissions_classes
