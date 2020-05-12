@@ -307,3 +307,18 @@ and below old class in views.py create viewset class and add list to list all it
     and in the last add
     ` filter_backends = (filters.SearchFilter,)
       search_fields = ('name', 'email',) #felters by name or email`
+38- Create login API ViewSet in view.py add
+  ` from rest_framework.authtoken.serializers import AuthTokenSerializer
+    from rest_framework.authtoken.views import ObtainAuthToken`
+    and in the last add
+    `class LoginVieSet(viewsets.ViewSet):
+        """Checks email and password and return an auth token."""
+        serializer_class = AuthTokenSerializer
+
+        def create(self, request): # post function
+            """Use the ObtainAuthToken APIView to validate and create a tookeno."""
+
+            return ObtainAuthToken().post(request)`
+
+    and in urls.py add the router
+    `router.register('login', views.LoginVieSet, basename='login')`
