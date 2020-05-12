@@ -50,3 +50,15 @@ class UserProfile(AbstractBaseUser, PermissionsMixin): # inherited from Abstrack
     def __str__(self):
         """Django uses this when it needs to convert the object to a string"""
         return self.email
+
+class ProfileFeedItem(models.Model):
+    """Profile status update."""
+
+    user_profile = models.ForeignKey('UserProfile', on_delete=models.CASCADE) # this will delete all feeds related to the profiles
+    status_text = models.CharField(max_length=255)
+    created_on = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self): # when pring this model as string will execute this function
+        """Return the as string."""
+
+        return status_text
