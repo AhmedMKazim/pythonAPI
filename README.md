@@ -284,3 +284,20 @@ and below old class in views.py create viewset class and add list to list all it
 
 34- Register profile ViewSet with the URL router by adding this line below old router in urls.py
   `router.register('profile', views.UserProfileViewSet) # when using model you don't need to add basename its taked from the model`
+35- Create permission class
+  first of all create permission.py file, here will store all permissions
+  then fill it with
+  `class UpdateOwnProfile(permissions.BasePermission):
+      """Allow users to edit their own profile."""
+      def has_object_permission(self, request, view, obj):
+          """Check user is trying to edit their own profile."""
+          if request.method in permissions.SAFE_METHODS: # if user the method is get only
+              return True
+          # here if obj data is updated
+          return obj.id == request.user.id # obj is the object which edited by the user`
+36- Add authentication and permissions to ViewSet
+  start by addding
+  `from . import permissions`
+  then inside UserProfileViewSet adding in last lines
+  ` authentication_classes = (TokenAuthentication,) # , = tuple: mean that this is imutable which mean it can not be change after set
+    permission_classes = (permissions.UpdateOwnProfile,)`
