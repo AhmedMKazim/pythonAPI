@@ -301,3 +301,9 @@ and below old class in views.py create viewset class and add list to list all it
   then inside UserProfileViewSet adding in last lines
   ` authentication_classes = (TokenAuthentication,) # , = tuple: mean that this is imutable which mean it can not be change after set
     permission_classes = (permissions.UpdateOwnProfile,)`
+37- Add search profiles feature
+    first in view.py
+    `from rest_framework import filters`
+    and in the last add
+    ` filter_backends = (filters.SearchFilter,)
+      search_fields = ('name', 'email',) #felters by name or email`
